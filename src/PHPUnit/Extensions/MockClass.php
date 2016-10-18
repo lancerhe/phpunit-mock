@@ -60,8 +60,11 @@ class PHPUnit_Extensions_MockClass {
             return $this;
 
         $this->_mock = true;
+
         foreach ($this->_methods as $method) {
-            runkit_method_rename( $this->_class_name, $method, "_origin_" . $method);
+            if(method_exists($this->_class_name, $method)){
+                runkit_method_rename( $this->_class_name, $method, "_origin_" . $method);
+            }
             runkit_method_add   ( $this->_class_name, $method, '', $this->getMockCode($method));
         }
         return $this;
@@ -79,7 +82,9 @@ class PHPUnit_Extensions_MockClass {
         $this->_mock = false;
         foreach ($this->_methods as $method) {
             runkit_method_remove( $this->_class_name, $method);
-            runkit_method_rename( $this->_class_name, "_origin_" . $method, $method);
+            if(method_exists($this->_class_name, "_origin_" . $method)){
+                runkit_method_rename( $this->_class_name, "_origin_" . $method, $method);
+            }
         }
         return $this;
     }
